@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <Properties>
+        <Property name="LOG_HOME">${sys:user.dir}/log</Property>
+        <Property name="LOG_FILE1">agent.log</Property>
+        <Property name="LOG_FILE2">agent_exp.log</Property>
+    </Properties>
+    
+    <Appenders>
+   		<Console name="console_appender" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%-5level] %c{1}: %msg%xEx%n"/>
+        </Console>
+        <!-- server root日志 -->
+        <RollingFile  name="agent" immediateFlush="true" fileName="${LOG_HOME}/${LOG_FILE1}"
+                      filePattern="${LOG_HOME}/${LOG_FILE1}.%i">
+            <!-- <Filters>
+	      	  	过滤器 ：只允许级别为error的日志通过
+	          	<ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+	       	</Filters> -->
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] %c{1}: %msg%xEx%n</pattern>
+            </PatternLayout>
+            <Policies>
+             	<!--默认打印周期为一天-->
+                <!-- <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
+        		<SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <!--保存日志个数为n个-->
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile > 
+        
+        <RollingFile  name="agentexp" immediateFlush="true" fileName="${LOG_HOME}/${LOG_FILE2}"
+                      filePattern="${LOG_HOME}/${LOG_FILE2}.%i">
+            <!-- <Filters>
+	      	  	过滤器 ：只允许级别为error的日志通过
+	          	<ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+	       	</Filters> -->
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5level] %c{1}: %msg%xEx%n</pattern>
+            </PatternLayout>
+            <Policies>
+             	<!--默认打印周期为一天-->
+                <!-- <TimeBasedTriggeringPolicy modulate="true" interval="1"/> -->
+        		<SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <!--保存日志个数为n个-->
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile > 
+    </Appenders>
+
+   <Loggers>
+   		<logger name="agentexp" additivity="false" level="INFO">
+	   		<AppenderRef  ref="agentexp" level="INFO" />
+	   </logger>
+	   <root level="INFO" includeLocation="false">
+	   		<appender-ref ref="console_appender" level="INFO"/>
+	   		<appender-ref ref="agent" level="INFO"/>
+       </root>
+    </Loggers>
+</configuration>
